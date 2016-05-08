@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour {
 	public GameState gameState;
 
 	public GameObject menuPanel;
+	public GameObject scanPanel;
 	bool justBegin;
 
 	string stringChain;
@@ -123,6 +124,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ShowEffect(){
+		scanPanel.GetComponent<Animator>().Play("castSpell");
 		feedbackText.text = stringChain;
 		successfulCast = false;
 	}
