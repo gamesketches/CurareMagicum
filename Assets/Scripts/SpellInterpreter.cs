@@ -39,6 +39,10 @@ public class SpellInterpreter : MonoBehaviour {
 		levels = sr.ReadToEnd().Split('\n');
 		sr.Close();
 		maxLevel = levels.Length - 1;
+
+		genNewAnswer();
+		Debug.Log(getSymptoms());
+		Debug.Break();
 	}
 
 	public void genNewAnswer() {
@@ -63,6 +67,7 @@ public class SpellInterpreter : MonoBehaviour {
 	public string getSymptoms() {
 		return string.Concat(symptoms[(int)firstSlot].Split(',')[0],
 			symptoms[(int)secondSlot].Split(',')[1],
+						"on the",
 							symptoms[(int)thirdSlot].Split(',')[2]);
 	}
 
