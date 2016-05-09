@@ -1,22 +1,17 @@
-0,No Effect at all
-1,"little Effect Affliction Remains",
-2,"Mildly Effective Affliction Remains",
-3,"Somewhat affective Affliction Remains",
-4,"Effective Treatment Area Treated Symptoms Remain",
-5,"Very effective treatment but the patient still suffers",
-6,"Very effective treatment a symptom remains",
-7,,,,,,,,
-8,"Very Effective treatment near cured but not sickness lingers",
-9,,,,,,,,
-10,,,,,,,,
-11,,,,,,,,
-12,,,,,,,,
-13,Cured but need bedrest,,,,,,,
-14,,,,,,,,
-15,,,,,,,,
-16,Full Cure,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
+No Effect at all
+"little Effect Affliction Remains"
+"Mildly Effective Affliction Remains"
+"Somewhat affective Affliction Remains"
+"Effective Treatment Area Treated Symptoms Remain"
+"Very effective treatment but the patient still suffers"
+"Very effective treatment a symptom remains"
+
+"Very Effective treatment near cured but not sickness lingers"
+
+
+
+
+Cured but need bedrest
+
+
+Full Cure
