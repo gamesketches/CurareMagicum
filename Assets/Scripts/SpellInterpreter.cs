@@ -15,7 +15,7 @@ public class SpellInterpreter : MonoBehaviour {
 	string[] areaCures;
 	string[] levels;
 	public int level = -1;
-	private int maxLevel;
+	public int maxLevel;
 
 	// Use this for initialization
 	void Start () {
