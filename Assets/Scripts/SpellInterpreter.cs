@@ -41,7 +41,7 @@ public class SpellInterpreter : MonoBehaviour {
 		maxLevel = levels.Length - 1;
 
 		genNewAnswer();
-		Debug.Log(getSymptoms());
+		Debug.Log(getSeverity());
 		Debug.Break();
 	}
 
@@ -132,10 +132,10 @@ public class SpellInterpreter : MonoBehaviour {
 
 	public string getSeverity() {
 		string[] curSpell = new string[3] {firstSlot.ToString(), secondSlot.ToString(), thirdSlot.ToString()};
-		if(levels.ToArray().Distinct().Count() == 1) {
+		if(curSpell.ToArray().Distinct().Count() == 1) {
 			return "Lethal";
 		}
-		else if(levels.ToArray().Distinct().Count() == 3) {
+		else if(curSpell.ToArray().Distinct().Count() == 3) {
 			return "Mild";
 		}
 		else if(curSpell[1] == curSpell[2]) {
