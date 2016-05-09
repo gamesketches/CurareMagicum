@@ -7,7 +7,9 @@ using System.Threading;
 public class GameManager : MonoBehaviour {
 	public enum GameState{
 		menu,
-		level1
+		level1,
+		level2,
+		level3
 	}
 
 	public VuforiaBehaviour ARCamera;
@@ -38,9 +40,13 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject menuPanel;
 	public GameObject scanPanel;
+	public Text narratorText;
+
 	bool justBegin;
+	int triedTimes = 0;
 
 	string stringChain;
+	SpellInterpreter interpreter;
 
 	// Use this for initialization
 	void Start () {
@@ -48,6 +54,7 @@ public class GameManager : MonoBehaviour {
 		VuforiaBehaviour.Instance.RegisterOnPauseCallback(OnPaused);
 		Invoke("DisableARCamera",0.5f);
 		gameState = GameState.menu;
+		interpreter = GetComponent<SpellInterpreter>();
 		justBegin = true;
 	}
 	
@@ -58,9 +65,10 @@ public class GameManager : MonoBehaviour {
 				menuPanel.GetComponent<Animator>().Play("begin");
 				justBegin = false;
 			}
-		}else if(gameState == GameState.level1){
+		}else{
 			currentProgress = Mathf.SmoothDamp(currentProgress, targetProgress, ref velocity, smooth);
 			progressLine.fillAmount = currentProgress;
+
 		}
 	}
 
@@ -114,25 +122,65 @@ public class GameManager : MonoBehaviour {
 			magicImage1.sprite = tmpSprit;
 			magicImage1.color = Color.white;
 			targetProgress = 0.631f;
-			stringChain += " + " + element;
+			stringChain += "+" + element;
 		}else if(MagicNum == 3){
 			magicImage2.sprite = tmpSprit;
 			magicImage2.color = Color.white;
 			targetProgress = 1f;
-			stringChain += " + " + element;
+			stringChain += "+" + element;
 		}
 	}
 
 	public void ShowEffect(){
-		scanPanel.GetComponent<Animator>().Play("castSpell");
-		feedbackText.text = stringChain;
+		string[] castedSpell = stringChain.Split('+');
 		successfulCast = false;
+		string[] currentSlots = interpreter.getCurrentSlotsChain().Split('+');
+		scanPanel.GetComponent<Animator>().Play("castSpell");
+		feedbackText.text = "You casted a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
+		if(gameState == GameState.level1){
+			if(stringChain == interpreter.getCurrentSlotsChain()){
+				interpreter.nextLevel();
+				currentSlots = interpreter.getCurrentSlotsChain().Split('+');
+				narratorText.text = "Now give us a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
+				gameState = GameState.level2;
+			}
+		}else if(gameState == GameState.level2){
+			if(stringChain == interpreter.getCurrentSlotsChain()){
+				feedbackText.text += "\nThis is a treatment for\n" + interpreter.getSymptoms();
+				if(interpreter.level < 2){
+					interpreter.nextLevel();
+					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
+					narratorText.text = "Now give us a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
+				}else{
+					interpreter.nextLevel();
+					narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+					gameState = GameState.level3;
+				}
+			}
+		}else if(gameState == GameState.level3){
+			int score = interpreter.checkAnswer(castedSpell[0],castedSpell[1],castedSpell[2]);
+			feedbackText.text += "\n" + interpreter.cureRatings[score];
+			if(stringChain == interpreter.getCurrentSlotsChain()){
+				interpreter.nextLevel();
+				narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+				triedTimes = 0;
+			}else{
+				triedTimes += 1;
+				if(triedTimes >= 3){
+					interpreter.nextLevel();
+					narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+					triedTimes = 0;
+				}
+			}
+		}
 	}
 
 	public void EnterGame(){
 		if(gameState == GameState.menu){
 			gameState = GameState.level1;
+			interpreter.nextLevel();
 			menuPanel.GetComponent<Animator>().Play("gameStart");
+			narratorText.text = "Give us the following\nspell\n" + interpreter.getCurrentSlotsChain();
 		}
 	}
 
@@ -140,6 +188,7 @@ public class GameManager : MonoBehaviour {
 		Debug.Log("ButtonDown");
 		stringChain = "";
 		feedbackText.text = stringChain;
+		narratorText.CrossFadeAlpha(0,0.5f,true);
 		ARCamera.enabled = true;
 		startCount = true;
 		magicCircle.ScaleTo(Vector3.one,1f,0,EaseType.easeInOutQuad);
@@ -147,6 +196,7 @@ public class GameManager : MonoBehaviour {
 
 	public void ButtonUp(){
 		Debug.Log("ButtonUp");
+		narratorText.CrossFadeAlpha(1,2f,true);
 		ARCamera.enabled = false;
 		startCount = false;
 		MagicNum = 0;

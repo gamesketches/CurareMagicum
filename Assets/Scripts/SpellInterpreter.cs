@@ -10,11 +10,11 @@ public class SpellInterpreter : MonoBehaviour {
 
 	Element firstSlot, secondSlot, thirdSlot;
 	string[] spellNames;
-	string[] cureRatings;
+	public string[] cureRatings;
 	string[] symptoms;
 	string[] areaCures;
 	string[] levels;
-	public int level = 0;
+	public int level = -1;
 	private int maxLevel;
 
 	// Use this for initialization
@@ -38,9 +38,7 @@ public class SpellInterpreter : MonoBehaviour {
 		sr = File.OpenText("Assets/Resources/levels.csv");
 		levels = sr.ReadToEnd().Split('\n');
 		sr.Close();
-
 		maxLevel = levels.Length - 1;
-
 	}
 
 	public void genNewAnswer() {
@@ -76,6 +74,11 @@ public class SpellInterpreter : MonoBehaviour {
 		}
 
 		return coreSpell;
+	}
+
+	public string getCurrentSlotsChain(){
+		string currentSlots = firstSlot.ToString() + "+" + secondSlot.ToString() + "+" + thirdSlot.ToString();
+		return currentSlots;
 	}
 
 	public int checkAnswer(string firstElement, string secondElement, string thirdElement) {
