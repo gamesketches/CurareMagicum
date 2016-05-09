@@ -87,11 +87,23 @@ public class SpellInterpreter : MonoBehaviour {
 		Element third = Parse(thirdElement);
 
 		int score = 0;
+		int areaCureLength = areaCures[(int)thirdSlot].Split(',')[1].Length;
+		if(first == firstSlot && second == secondSlot && third == thirdSlot) {
+			return 16;
+		}
 
+		if(first == secondSlot && second == firstSlot && third == thirdSlot) {
+			return 8;
+		}
+		if(symptoms[(int)first].Split(',')[0] == symptoms[(int)firstSlot].Split(',')[0] &&
+			second == secondSlot
+			&& areaCures[(int)thirdSlot].Split(',')[1] == areaCures[(int)third].Split(',')[2].Substring(0, areaCureLength)){
+			return 13;
+		}
 		if(first == firstSlot) {
 			score += 2;
 		}
-		else if( symptoms[(int)first].Split(',')[0] == symptoms[(int)firstSlot].Split(',')[0]) {
+		else if(symptoms[(int)first].Split(',')[0] == symptoms[(int)firstSlot].Split(',')[0]) {
 			score += 1;
 		}
 
@@ -99,7 +111,7 @@ public class SpellInterpreter : MonoBehaviour {
 			score += 1;
 		}
 
-		if(third == thirdSlot || areaCures[(int)thirdSlot].Split(',')[2] == areaCures[(int)third].Split(',')[1]) {
+		if(third == thirdSlot) {
 			score += 4;
 		}
 		return score;
