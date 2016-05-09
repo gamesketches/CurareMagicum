@@ -146,14 +146,14 @@ public class GameManager : MonoBehaviour {
 			}
 		}else if(gameState == GameState.level2){
 			if(stringChain == interpreter.getCurrentSlotsChain()){
-				feedbackText.text += "\nThis is a treatment for\n" + interpreter.getSymptoms();
+				feedbackText.text += "\nThis is a treatment for\n" +interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 				if(interpreter.level < 2){
 					interpreter.nextLevel();
 					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
 					narratorText.text = "Now give us a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
 				}else{
 					interpreter.nextLevel();
-					narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+					narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 					gameState = GameState.level3;
 				}
 			}
@@ -162,13 +162,13 @@ public class GameManager : MonoBehaviour {
 			feedbackText.text += "\n" + interpreter.cureRatings[score];
 			if(stringChain == interpreter.getCurrentSlotsChain()){
 				interpreter.nextLevel();
-				narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+				narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 				triedTimes = 0;
 			}else{
 				triedTimes += 1;
 				if(triedTimes >= 3){
 					interpreter.nextLevel();
-					narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+					narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 					triedTimes = 0;
 				}
 			}

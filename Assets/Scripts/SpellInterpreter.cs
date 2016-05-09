@@ -54,6 +54,9 @@ public class SpellInterpreter : MonoBehaviour {
 			firstSlot = Parse(levels[level].Split(',')[0]);
 			secondSlot = Parse(levels[level].Split(',')[1]);
 			thirdSlot = Parse(levels[level].Split(',')[2]);
+		}else{
+			level++;
+			genNewAnswer();
 		}
 	}
 
