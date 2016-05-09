@@ -41,9 +41,12 @@ public class GameManager : MonoBehaviour {
 	public GameObject menuPanel;
 	public GameObject scanPanel;
 	public Text narratorText;
+	public Text menuText;
 
 	bool justBegin;
 	int triedTimes = 0;
+	int highestScoreOfThreeTries = 0;
+	int totalScore = 0;
 
 	string stringChain;
 	SpellInterpreter interpreter;
@@ -146,30 +149,44 @@ public class GameManager : MonoBehaviour {
 			}
 		}else if(gameState == GameState.level2){
 			if(stringChain == interpreter.getCurrentSlotsChain()){
-				feedbackText.text += "\nThis is a treatment for\n" + interpreter.getSymptoms();
+				feedbackText.text += "\nThis is a treatment for\n" +interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 				if(interpreter.level < 2){
 					interpreter.nextLevel();
 					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
 					narratorText.text = "Now give us a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
 				}else{
 					interpreter.nextLevel();
-					narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+					narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 					gameState = GameState.level3;
 				}
 			}
 		}else if(gameState == GameState.level3){
 			int score = interpreter.checkAnswer(castedSpell[0],castedSpell[1],castedSpell[2]);
 			feedbackText.text += "\n" + interpreter.cureRatings[score];
+			if(score > highestScoreOfThreeTries){
+				highestScoreOfThreeTries = score;
+			}
+
 			if(stringChain == interpreter.getCurrentSlotsChain()){
 				interpreter.nextLevel();
-				narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+				totalScore += highestScoreOfThreeTries;
+				highestScoreOfThreeTries = 0;
+				narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 				triedTimes = 0;
+				if(interpreter.level == interpreter.maxLevel+1){
+					Invoke("BackToMenuAndShowScore",1);
+				}
 			}else{
 				triedTimes += 1;
 				if(triedTimes >= 3){
 					interpreter.nextLevel();
-					narratorText.text = "Now try to cure\n" + interpreter.getSymptoms();
+					totalScore += highestScoreOfThreeTries;
+					highestScoreOfThreeTries = 0;
+					narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 					triedTimes = 0;
+					if(interpreter.level == interpreter.maxLevel+1){
+						Invoke("BackToMenuAndShowScore",1);
+					}
 				}
 			}
 		}
@@ -180,8 +197,16 @@ public class GameManager : MonoBehaviour {
 			gameState = GameState.level1;
 			interpreter.nextLevel();
 			menuPanel.GetComponent<Animator>().Play("gameStart");
-			narratorText.text = "Give us the following\nspell\n" + interpreter.getCurrentSlotsChain();
+			narratorText.text = "Give us the following spell\n" + interpreter.getCurrentSlotsChain();
+		}else if(gameState == GameState.level3){
+			menuPanel.GetComponent<Animator>().Play("gameStart");
 		}
+	}
+
+	void BackToMenuAndShowScore(){
+		menuPanel.GetComponent<Animator>().Play("gameEnd");
+		menuText.text = "Total Score: "+totalScore.ToString();
+		menuText.text += "\nCongratulation" + "\nClick To Continue";
 	}
 
 	public void ButtonDown(){
