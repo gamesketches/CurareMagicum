@@ -144,10 +144,10 @@ public class GameManager : MonoBehaviour {
 		feedbackText.text = "You cast a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
 		if(gameState == GameState.level1){
 			if(stringChain == interpreter.getCurrentSlotsChain()){
-				interpreter.nextLevel();
-				currentSlots = interpreter.getCurrentSlotsChain().Split('+');
-				narratorText.text = "Now cast a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
-				gameState = GameState.level2;
+				narratorText.CrossFadeAlpha(0,0.1f,true);
+				narratorText.CrossFadeAlpha(1,2f,true);
+				narratorText.text = "Now that you've learned how the elements work, let's cast some real spells.";
+				StartCoroutine(EnterLevel2());
 			}else{
 				feedbackText.text = "Incorrect\nYou cast\n" + stringChain;
 				magicCircle.ScaleTo(Vector3.one * 0.1f,1,0,EaseType.easeInOutQuad);
@@ -161,11 +161,10 @@ public class GameManager : MonoBehaviour {
 					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
 					narratorText.text = "Now cast a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
 				}else{
-					interpreter.nextLevel();
-					caseNum = Random.Range(1000,9999);
-					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
-					narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSeverity()+" "+ interpreter.getSymptoms() + "\nCast a cure!";
-					gameState = GameState.level3;
+					narratorText.CrossFadeAlpha(0,0.1f,true);
+					narratorText.CrossFadeAlpha(1,2f,true);
+					narratorText.text = "You've gained a practical understanding of magic. Let's tackle some case files. You'll have 3 chances to get a Full Cure.";
+					StartCoroutine(EnterLevel3());
 				}
 			}else{
 				feedbackText.text = "Incorrect\nYou cast a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
@@ -185,7 +184,7 @@ public class GameManager : MonoBehaviour {
 				highestScoreOfThreeTries = 0;
 				caseNum = Random.Range(1000,9999);
 				currentSlots = interpreter.getCurrentSlotsChain().Split('+');
-				narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSeverity()+" "+ interpreter.getSymptoms() + "\nCast a cure!";
+				narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient suffers from\n"+ interpreter.getSeverity()+" "+ interpreter.getSymptoms() + "\nCast a cure!";
 				triedTimes = 0;
 				if(interpreter.level == interpreter.maxLevel+1){
 					Invoke("BackToMenuAndShowScore",3);
@@ -200,7 +199,7 @@ public class GameManager : MonoBehaviour {
 					highestScoreOfThreeTries = 0;
 					caseNum = Random.Range(1000,9999);
 					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
-					narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSeverity()+" "+ interpreter.getSymptoms() + "\nCast a cure!";
+					narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient suffers from\n"+ interpreter.getSeverity()+" "+ interpreter.getSymptoms() + "\nCast a cure!";
 					triedTimes = 0;
 					if(interpreter.level == interpreter.maxLevel+1){
 						Invoke("BackToMenuAndShowScore",3);
@@ -208,6 +207,27 @@ public class GameManager : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	IEnumerator EnterLevel2(){
+		yield return new WaitForSeconds(6);
+		interpreter.nextLevel();
+		string[] currentSlots = interpreter.getCurrentSlotsChain().Split('+');
+		narratorText.CrossFadeAlpha(0,0.1f,true);
+		narratorText.CrossFadeAlpha(1,2f,true);
+		narratorText.text = "Now cast a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
+		gameState = GameState.level2;
+	}
+
+	IEnumerator EnterLevel3(){
+		yield return new WaitForSeconds(6);
+		interpreter.nextLevel();
+		caseNum = Random.Range(1000,9999);
+		string[] currentSlots = interpreter.getCurrentSlotsChain().Split('+');
+		narratorText.CrossFadeAlpha(0,0.1f,true);
+		narratorText.CrossFadeAlpha(1,2f,true);
+		narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient suffers from\n"+ interpreter.getSeverity()+" "+ interpreter.getSymptoms() + "\nCast a cure!";
+		gameState = GameState.level3;
 	}
 
 	public void EnterGame(){
