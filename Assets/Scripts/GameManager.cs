@@ -194,7 +194,7 @@ public class GameManager : MonoBehaviour {
 			}
 		}else if(gameState == GameState.level3){
 			int score = interpreter.checkAnswer(castedSpell[0],castedSpell[1],castedSpell[2]);
-			if(score >= 10) {
+			if(score >= 16) {
 				uiSounds.clip = Resources.Load<AudioClip>("Sounds/Correct");
 				uiSounds.Play();
 			}
