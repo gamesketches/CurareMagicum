@@ -42,11 +42,13 @@ public class GameManager : MonoBehaviour {
 	public GameObject scanPanel;
 	public Text narratorText;
 	public Text menuText;
+	public UnityEngine.UI.Image castButton;
 
 	bool justBegin;
 	int triedTimes = 0;
 	int highestScoreOfThreeTries = 0;
 	int totalScore = 0;
+	int caseNum = 0;
 
 	string stringChain;
 	SpellInterpreter interpreter;
@@ -139,26 +141,35 @@ public class GameManager : MonoBehaviour {
 		successfulCast = false;
 		string[] currentSlots = interpreter.getCurrentSlotsChain().Split('+');
 		scanPanel.GetComponent<Animator>().Play("castSpell");
-		feedbackText.text = "You casted a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
+		feedbackText.text = "You cast a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
 		if(gameState == GameState.level1){
 			if(stringChain == interpreter.getCurrentSlotsChain()){
 				interpreter.nextLevel();
 				currentSlots = interpreter.getCurrentSlotsChain().Split('+');
-				narratorText.text = "Now give us a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
+				narratorText.text = "Now cast a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
 				gameState = GameState.level2;
+			}else{
+				feedbackText.text = "Incorrect\nYou cast\n" + stringChain;
+				magicCircle.ScaleTo(Vector3.one * 0.1f,1,0,EaseType.easeInOutQuad);
+				narratorText.CrossFadeAlpha(1,2f,true);
 			}
 		}else if(gameState == GameState.level2){
 			if(stringChain == interpreter.getCurrentSlotsChain()){
-				feedbackText.text += "\nThis is a treatment for\n" +interpreter.getSeverity()+" "+ interpreter.getSymptoms();
+				feedbackText.text += "\nThis spell treats \n" +interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 				if(interpreter.level < 2){
 					interpreter.nextLevel();
 					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
-					narratorText.text = "Now give us a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
+					narratorText.text = "Now cast a\n" + interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]);
 				}else{
 					interpreter.nextLevel();
-					narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
+					caseNum = Random.Range(1000,9999);
+					narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]) + "\nCast a cure!";
 					gameState = GameState.level3;
 				}
+			}else{
+				feedbackText.text = "Incorrect\nYou cast a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
+				magicCircle.ScaleTo(Vector3.one * 0.1f,1,0,EaseType.easeInOutQuad);
+				narratorText.CrossFadeAlpha(1,2f,true);
 			}
 		}else if(gameState == GameState.level3){
 			int score = interpreter.checkAnswer(castedSpell[0],castedSpell[1],castedSpell[2]);
@@ -171,21 +182,25 @@ public class GameManager : MonoBehaviour {
 				interpreter.nextLevel();
 				totalScore += highestScoreOfThreeTries;
 				highestScoreOfThreeTries = 0;
-				narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
+				caseNum = Random.Range(1000,9999);
+				narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]) + "\nCast a cure!";
 				triedTimes = 0;
 				if(interpreter.level == interpreter.maxLevel+1){
-					Invoke("BackToMenuAndShowScore",1);
+					Invoke("BackToMenuAndShowScore",3);
 				}
 			}else{
+				magicCircle.ScaleTo(Vector3.one * 0.1f,1,0,EaseType.easeInOutQuad);
+				narratorText.CrossFadeAlpha(1,2f,true);
 				triedTimes += 1;
 				if(triedTimes >= 3){
 					interpreter.nextLevel();
 					totalScore += highestScoreOfThreeTries;
 					highestScoreOfThreeTries = 0;
-					narratorText.text = "Now try to cure\n" + interpreter.getSeverity()+" "+ interpreter.getSymptoms();
+					caseNum = Random.Range(1000,9999);
+					narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]) + "\nCast a cure!";
 					triedTimes = 0;
 					if(interpreter.level == interpreter.maxLevel+1){
-						Invoke("BackToMenuAndShowScore",1);
+						Invoke("BackToMenuAndShowScore",3);
 					}
 				}
 			}
@@ -197,7 +212,7 @@ public class GameManager : MonoBehaviour {
 			gameState = GameState.level1;
 			interpreter.nextLevel();
 			menuPanel.GetComponent<Animator>().Play("gameStart");
-			narratorText.text = "Give us the following spell\n" + interpreter.getCurrentSlotsChain();
+			narratorText.text = "Cast a spell composed of\n" + interpreter.getCurrentSlotsChain();
 		}else if(gameState == GameState.level3){
 			menuPanel.GetComponent<Animator>().Play("gameStart");
 		}
@@ -206,11 +221,35 @@ public class GameManager : MonoBehaviour {
 	void BackToMenuAndShowScore(){
 		menuPanel.GetComponent<Animator>().Play("gameEnd");
 		menuText.text = "Total Score: "+totalScore.ToString();
-		menuText.text += "\nCongratulation" + "\nClick To Continue";
+		string ranking = "";
+		feedbackText.text = "";
+		if(totalScore > 60) {
+			ranking = "Fully Accredited\nNow, start your own practice!";
+		}
+		else if(totalScore > 50) {
+			ranking = "Accredited\nNow, start your own practice!";
+		}
+		else if(totalScore > 32) {
+			ranking = "Barely Accredited\nNow, start your own practice!";
+		}
+		else if(totalScore > 16) {
+			ranking = "Unlicensed\nPlease try again";
+		}
+		else {
+			ranking = "Dropout\nPlease try again";
+		}
+
+		if(totalScore <= 32){
+			totalScore = 0;
+			interpreter.level = -1;
+			gameState = GameState.menu;
+		}
+		menuText.text += "\nCongratulations!" + "\nRanking: " + ranking;
 	}
 
 	public void ButtonDown(){
 		Debug.Log("ButtonDown");
+		castButton.CrossFadeAlpha(0.5f,0.1f,true);
 		stringChain = "";
 		feedbackText.text = stringChain;
 		narratorText.CrossFadeAlpha(0,0.5f,true);
@@ -221,6 +260,7 @@ public class GameManager : MonoBehaviour {
 
 	public void ButtonUp(){
 		Debug.Log("ButtonUp");
+		castButton.CrossFadeAlpha(1,0.1f,true);
 		narratorText.CrossFadeAlpha(1,2f,true);
 		ARCamera.enabled = false;
 		startCount = false;

@@ -40,9 +40,6 @@ public class SpellInterpreter : MonoBehaviour {
 		sr.Close();
 		maxLevel = levels.Length - 1;
 
-		genNewAnswer();
-		Debug.Log(getSeverity());
-		Debug.Break();
 	}
 
 	public void genNewAnswer() {
