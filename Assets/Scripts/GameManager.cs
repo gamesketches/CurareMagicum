@@ -60,19 +60,20 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		VuforiaBehaviour.Instance.RegisterVuforiaStartedCallback(OnVuforiaStarted);
 		VuforiaBehaviour.Instance.RegisterOnPauseCallback(OnPaused);
-		Invoke("DisableARCamera",0.5f);
+		StartCoroutine(DisableARCamera());
 		gameState = GameState.menu;
 		interpreter = GetComponent<SpellInterpreter>();
 		justBegin = true;
 		uiSounds = GetComponents<AudioSource>()[0];
 		spellSounds = GetComponents<AudioSource>()[1];
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(gameState == GameState.menu){
 			if(justBegin){
-				menuPanel.GetComponent<Animator>().Play("begin");
+//				menuPanel.GetComponent<Animator>().CrossFade("begin",1);
 				justBegin = false;
 			}
 		}else{
@@ -93,9 +94,13 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	void DisableARCamera(){
-		Thread.Sleep(500);
+	IEnumerator DisableARCamera(){
+		yield return new WaitForSeconds(1);
 		ARCamera.enabled = false;
+		//TempCode
+		gameState = GameState.level1;
+		interpreter.nextLevel();
+		narratorText.text = "Cast a spell composed of\n" + interpreter.getCurrentSlotsChain();
 	}
 
 	public void ShowElementInOrder(string element){
@@ -216,7 +221,7 @@ public class GameManager : MonoBehaviour {
 				narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient suffers from\n"+ interpreter.getSeverity()+" "+ interpreter.getSymptoms() + "\nCast a cure!";
 				triedTimes = 0;
 				if(interpreter.level == interpreter.maxLevel+1){
-					Invoke("BackToMenuAndShowScore",3);
+					StartCoroutine(BackToMenuAndShowScore());
 				}
 			}else{
 				magicCircle.ScaleTo(Vector3.one * 0.1f,1,0,EaseType.easeInOutQuad);
@@ -231,7 +236,7 @@ public class GameManager : MonoBehaviour {
 					narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient suffers from\n"+ interpreter.getSeverity()+" "+ interpreter.getSymptoms() + "\nCast a cure!";
 					triedTimes = 0;
 					if(interpreter.level == interpreter.maxLevel+1){
-						Invoke("BackToMenuAndShowScore",3);
+						StartCoroutine(BackToMenuAndShowScore());
 					}
 				}
 			}
@@ -272,8 +277,9 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	void BackToMenuAndShowScore(){
-		menuPanel.GetComponent<Animator>().Play("gameEnd");
+	IEnumerator BackToMenuAndShowScore(){
+		yield return new WaitForSeconds(4);
+//		menuPanel.GetComponent<Animator>().Play("gameEnd");
 		menuText.text = "Total Score: "+totalScore.ToString();
 		string ranking = "";
 		feedbackText.text = "";
