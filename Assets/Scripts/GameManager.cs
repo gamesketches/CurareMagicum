@@ -66,14 +66,13 @@ public class GameManager : MonoBehaviour {
 		justBegin = true;
 		uiSounds = GetComponents<AudioSource>()[0];
 		spellSounds = GetComponents<AudioSource>()[1];
-
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(gameState == GameState.menu){
 			if(justBegin){
-//				menuPanel.GetComponent<Animator>().CrossFade("begin",1);
+				menuPanel.GetComponent<Animator>().Play("begin");
 				justBegin = false;
 			}
 		}else{
@@ -97,10 +96,6 @@ public class GameManager : MonoBehaviour {
 	IEnumerator DisableARCamera(){
 		yield return new WaitForSeconds(1);
 		ARCamera.enabled = false;
-		//TempCode
-		gameState = GameState.level1;
-		interpreter.nextLevel();
-		narratorText.text = "Cast a spell composed of\n" + interpreter.getCurrentSlotsChain();
 	}
 
 	public void ShowElementInOrder(string element){
@@ -157,8 +152,7 @@ public class GameManager : MonoBehaviour {
 		string[] castedSpell = stringChain.Split('+');
 		successfulCast = false;
 		string[] currentSlots = interpreter.getCurrentSlotsChain().Split('+');
-//		scanPanel.GetComponent<Animator>().Play("castSpell");
-		feedbackText.CrossFadeAlpha(1,2,true);
+		scanPanel.GetComponent<Animator>().Play("castSpell");
 		feedbackText.text = "You cast a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
 		spellSounds.Play();
 		if(gameState == GameState.level1){
@@ -280,10 +274,8 @@ public class GameManager : MonoBehaviour {
 
 	IEnumerator BackToMenuAndShowScore(){
 		yield return new WaitForSeconds(4);
-//		menuPanel.GetComponent<Animator>().Play("gameEnd");
+		menuPanel.GetComponent<Animator>().Play("gameEnd");
 		menuText.text = "Total Score: "+totalScore.ToString();
-		//Tmp Code
-		narratorText.text = "Total Score: "+totalScore.ToString();
 		string ranking = "";
 		feedbackText.text = "";
 		if(totalScore > 60) {
@@ -308,8 +300,6 @@ public class GameManager : MonoBehaviour {
 			gameState = GameState.menu;
 		}
 		menuText.text += "\nCongratulations!" + "\nRanking: " + ranking;
-		//TmpCode
-		narratorText.text += "\nCongratulations!" + "\nRanking: " + ranking;
 	}
 
 	public void ButtonDown(){
