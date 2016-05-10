@@ -132,6 +132,7 @@ public class GameManager : MonoBehaviour {
 			targetProgress = 0.367f;
 			stringChain += element;
 		}else if(MagicNum == 2){
+			uiSounds.clip = Resources.Load<AudioClip>("Sounds/SpellSelect2");
 			uiSounds.Play();
 			magicImage1.sprite = tmpSprit;
 			magicImage1.color = Color.white;
