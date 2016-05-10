@@ -258,6 +258,8 @@ public class GameManager : MonoBehaviour {
 
 	public void EnterGame(){
 		if(gameState == GameState.menu){
+			uiSounds.clip = Resources.Load<AudioClip>("Sounds/ButtonClick");
+			uiSounds.Play();
 			gameState = GameState.level1;
 			interpreter.nextLevel();
 			menuPanel.GetComponent<Animator>().Play("gameStart");
@@ -298,6 +300,8 @@ public class GameManager : MonoBehaviour {
 
 	public void ButtonDown(){
 		Debug.Log("ButtonDown");
+		uiSounds.clip = Resources.Load<AudioClip>("Sounds/ButtonClick");
+		uiSounds.Play();
 		castButton.CrossFadeAlpha(0.5f,0.1f,true);
 		stringChain = "";
 		feedbackText.text = stringChain;
