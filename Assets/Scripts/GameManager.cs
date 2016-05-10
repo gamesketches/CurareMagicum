@@ -281,6 +281,8 @@ public class GameManager : MonoBehaviour {
 		yield return new WaitForSeconds(4);
 //		menuPanel.GetComponent<Animator>().Play("gameEnd");
 		menuText.text = "Total Score: "+totalScore.ToString();
+		//Tmp Code
+		narratorText.text = "Total Score: "+totalScore.ToString();
 		string ranking = "";
 		feedbackText.text = "";
 		if(totalScore > 60) {
@@ -305,6 +307,8 @@ public class GameManager : MonoBehaviour {
 			gameState = GameState.menu;
 		}
 		menuText.text += "\nCongratulations!" + "\nRanking: " + ranking;
+		//TmpCode
+		narratorText.text += "\nCongratulations!" + "\nRanking: " + ranking;
 	}
 
 	public void ButtonDown(){
