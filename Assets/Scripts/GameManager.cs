@@ -186,6 +186,8 @@ public class GameManager : MonoBehaviour {
 					StartCoroutine(EnterLevel3());
 				}
 			}else{
+				uiSounds.clip = Resources.Load<AudioClip>("Sounds/Incorrect");
+				uiSounds.Play();
 				feedbackText.text = "Incorrect\nYou cast a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
 				magicCircle.ScaleTo(Vector3.one * 0.1f,1,0,EaseType.easeInOutQuad);
 				narratorText.CrossFadeAlpha(1,2f,true);
