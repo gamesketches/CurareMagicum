@@ -247,13 +247,13 @@ public class GameManager : MonoBehaviour {
 		string ranking = "";
 		feedbackText.text = "";
 		if(totalScore > 60) {
-			ranking = "Fully Accredited\nNow, start your own practice!";
+			ranking = "Fully Accredited\nStay sharp, keep curing!";
 		}
 		else if(totalScore > 50) {
-			ranking = "Accredited\nNow, start your own practice!";
+			ranking = "Accredited\nStay sharp, keep curing!";
 		}
 		else if(totalScore > 32) {
-			ranking = "Barely Accredited\nNow, start your own practice!";
+			ranking = "Barely Accredited\nStay sharp, keep curing!";
 		}
 		else if(totalScore > 16) {
 			ranking = "Unlicensed\nPlease try again";
