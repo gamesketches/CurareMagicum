@@ -157,7 +157,8 @@ public class GameManager : MonoBehaviour {
 		string[] castedSpell = stringChain.Split('+');
 		successfulCast = false;
 		string[] currentSlots = interpreter.getCurrentSlotsChain().Split('+');
-		scanPanel.GetComponent<Animator>().Play("castSpell");
+//		scanPanel.GetComponent<Animator>().Play("castSpell");
+		feedbackText.CrossFadeAlpha(1,2,true);
 		feedbackText.text = "You cast a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
 		spellSounds.Play();
 		if(gameState == GameState.level1){
