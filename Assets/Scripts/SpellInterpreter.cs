@@ -19,25 +19,36 @@ public class SpellInterpreter : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		StreamReader sr = File.OpenText("Assets/Resources/spellNames.csv");
-		spellNames = sr.ReadToEnd().Split('\n').ToArray();
-		sr.Close();
+//		StreamReader sr = File.OpenText("Assets/Resources/spellNames.csv");
+//		spellNames = sr.ReadToEnd().Split('\n').ToArray();
+//		sr.Close();
+		TextAsset ta = Resources.Load("spellNames") as TextAsset;
+		spellNames = ta.text.Split('\n');
 
-		sr = File.OpenText("Assets/Resources/symptomChart.csv");
-		symptoms = sr.ReadToEnd().Split('\n');
-		sr.Close();
+//		sr = File.OpenText("Assets/Resources/symptomChart.csv");
+//		symptoms = sr.ReadToEnd().Split('\n');
+//		sr.Close();
+		ta = Resources.Load("symptomChart") as TextAsset;
+		symptoms = ta.text.Split('\n');
 
-		sr = File.OpenText("Assets/Resources/cureRatings.csv");
-		cureRatings = sr.ReadToEnd().Split('\n');
-		sr.Close();
+//		sr = File.OpenText("Assets/Resources/cureRatings.csv");
+//		cureRatings = sr.ReadToEnd().Split('\n');
+//		sr.Close();
+		ta = Resources.Load("cureRatings") as TextAsset;
+		cureRatings = ta.text.Split('\n');
 
-		sr = File.OpenText("Assets/Resources/areaCures.csv");
-		areaCures = sr.ReadToEnd().Split('\n');
-		sr.Close();
+//		sr = File.OpenText("Assets/Resources/areaCures.csv");
+//		areaCures = sr.ReadToEnd().Split('\n');
+//		sr.Close();
+		ta = Resources.Load("areaCures") as TextAsset;
+		areaCures = ta.text.Split('\n');
 
-		sr = File.OpenText("Assets/Resources/levels.csv");
-		levels = sr.ReadToEnd().Split('\n');
-		sr.Close();
+//		sr = File.OpenText("Assets/Resources/levels.csv");
+//		levels = sr.ReadToEnd().Split('\n');
+//		sr.Close();
+		ta = Resources.Load("levels") as TextAsset;
+		levels = ta.text.Split('\n');
+
 		maxLevel = levels.Length - 1;
 
 	}
