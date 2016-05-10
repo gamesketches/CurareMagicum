@@ -50,6 +50,9 @@ public class GameManager : MonoBehaviour {
 	int totalScore = 0;
 	int caseNum = 0;
 
+	AudioSource uiSounds;
+	AudioSource spellSounds;
+
 	string stringChain;
 	SpellInterpreter interpreter;
 
@@ -61,6 +64,8 @@ public class GameManager : MonoBehaviour {
 		gameState = GameState.menu;
 		interpreter = GetComponent<SpellInterpreter>();
 		justBegin = true;
+		uiSounds = GetComponents<AudioSource>()[0];
+		spellSounds = GetComponents<AudioSource>()[1];
 	}
 	
 	// Update is called once per frame
@@ -119,16 +124,22 @@ public class GameManager : MonoBehaviour {
 			break;
 		}
 		if(MagicNum == 1){
+			spellSounds.clip = Resources.Load<AudioClip>(string.Concat("Sounds/", element, "Sound"));
+			uiSounds.clip = Resources.Load<AudioClip>("Sounds/SpellSelect1");
+			uiSounds.Play();
 			magicImage0.sprite = tmpSprit;
 			magicImage0.color = Color.white;
 			targetProgress = 0.367f;
 			stringChain += element;
 		}else if(MagicNum == 2){
+			uiSounds.Play();
 			magicImage1.sprite = tmpSprit;
 			magicImage1.color = Color.white;
 			targetProgress = 0.631f;
 			stringChain += "+" + element;
 		}else if(MagicNum == 3){
+			uiSounds.clip = Resources.Load<AudioClip>("Sounds/SpellSelect2");
+			uiSounds.Play();
 			magicImage2.sprite = tmpSprit;
 			magicImage2.color = Color.white;
 			targetProgress = 1f;
@@ -142,19 +153,26 @@ public class GameManager : MonoBehaviour {
 		string[] currentSlots = interpreter.getCurrentSlotsChain().Split('+');
 		scanPanel.GetComponent<Animator>().Play("castSpell");
 		feedbackText.text = "You cast a\n" + interpreter.getSpellName(castedSpell[0],castedSpell[1],castedSpell[2]);
+		spellSounds.Play();
 		if(gameState == GameState.level1){
 			if(stringChain == interpreter.getCurrentSlotsChain()){
+				uiSounds.clip = Resources.Load<AudioClip>("Sounds/Correct");
+				uiSounds.Play();
 				narratorText.CrossFadeAlpha(0,0.1f,true);
 				narratorText.CrossFadeAlpha(1,2f,true);
 				narratorText.text = "Now that you've learned how the elements work, let's cast some real spells.";
 				StartCoroutine(EnterLevel2());
 			}else{
+				uiSounds.clip = Resources.Load<AudioClip>("Sounds/Incorrect");
+				uiSounds.Play();
 				feedbackText.text = "Incorrect\nYou cast\n" + stringChain;
 				magicCircle.ScaleTo(Vector3.one * 0.1f,1,0,EaseType.easeInOutQuad);
 				narratorText.CrossFadeAlpha(1,2f,true);
 			}
 		}else if(gameState == GameState.level2){
 			if(stringChain == interpreter.getCurrentSlotsChain()){
+				uiSounds.clip = Resources.Load<AudioClip>("Sounds/Correct");
+				uiSounds.Play();
 				feedbackText.text += "\nThis spell treats \n" +interpreter.getSeverity()+" "+ interpreter.getSymptoms();
 				if(interpreter.level < 2){
 					interpreter.nextLevel();
@@ -173,6 +191,14 @@ public class GameManager : MonoBehaviour {
 			}
 		}else if(gameState == GameState.level3){
 			int score = interpreter.checkAnswer(castedSpell[0],castedSpell[1],castedSpell[2]);
+			if(score >= 10) {
+				uiSounds.clip = Resources.Load<AudioClip>("Sounds/Correct");
+				uiSounds.Play();
+			}
+			else {
+				uiSounds.clip = Resources.Load<AudioClip>("Sounds/Incorrect");
+				uiSounds.Play();
+			}
 			feedbackText.text += "\n" + interpreter.cureRatings[score];
 			if(score > highestScoreOfThreeTries){
 				highestScoreOfThreeTries = score;
