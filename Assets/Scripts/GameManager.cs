@@ -163,6 +163,7 @@ public class GameManager : MonoBehaviour {
 				}else{
 					interpreter.nextLevel();
 					caseNum = Random.Range(1000,9999);
+					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
 					narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]) + "\nCast a cure!";
 					gameState = GameState.level3;
 				}
@@ -183,6 +184,7 @@ public class GameManager : MonoBehaviour {
 				totalScore += highestScoreOfThreeTries;
 				highestScoreOfThreeTries = 0;
 				caseNum = Random.Range(1000,9999);
+				currentSlots = interpreter.getCurrentSlotsChain().Split('+');
 				narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]) + "\nCast a cure!";
 				triedTimes = 0;
 				if(interpreter.level == interpreter.maxLevel+1){
@@ -197,6 +199,7 @@ public class GameManager : MonoBehaviour {
 					totalScore += highestScoreOfThreeTries;
 					highestScoreOfThreeTries = 0;
 					caseNum = Random.Range(1000,9999);
+					currentSlots = interpreter.getCurrentSlotsChain().Split('+');
 					narratorText.text = "Case file:" + caseNum.ToString() + "\nPatient sufers from\n"+ interpreter.getSpellName(currentSlots[0],currentSlots[1],currentSlots[2]) + "\nCast a cure!";
 					triedTimes = 0;
 					if(interpreter.level == interpreter.maxLevel+1){
