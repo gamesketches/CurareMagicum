@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour {
 	int totalScore = 0;
 	int caseNum = 0;
 
+	bool startCountDownTime = false;
+
 	AudioSource uiSounds;
 	AudioSource spellSounds;
 
@@ -241,6 +243,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	IEnumerator EnterLevel2(){
+		while(!startCountDownTime){
+			yield return null;
+		}
 		yield return new WaitForSeconds(6);
 		interpreter.nextLevel();
 		string[] currentSlots = interpreter.getCurrentSlotsChain().Split('+');
@@ -251,6 +256,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	IEnumerator EnterLevel3(){
+		while(!startCountDownTime){
+			yield return null;
+		}
 		yield return new WaitForSeconds(6);
 		interpreter.nextLevel();
 		caseNum = Random.Range(1000,9999);
@@ -275,7 +283,10 @@ public class GameManager : MonoBehaviour {
 	}
 
 	IEnumerator BackToMenuAndShowScore(){
-		yield return new WaitForSeconds(4);
+		while(!startCountDownTime){
+			yield return null;
+		}
+		yield return new WaitForSeconds(3);
 		menuPanel.GetComponent<Animator>().Play("gameEnd");
 		menuText.text = "Total Score: "+totalScore.ToString();
 		string ranking = "";
@@ -306,6 +317,7 @@ public class GameManager : MonoBehaviour {
 
 	public void ButtonDown(){
 		Debug.Log("ButtonDown");
+		startCountDownTime = false;
 		uiSounds.clip = Resources.Load<AudioClip>("Sounds/ButtonClick");
 		uiSounds.Play();
 		castButton.CrossFadeAlpha(0.5f,0.1f,true);
@@ -319,6 +331,7 @@ public class GameManager : MonoBehaviour {
 
 	public void ButtonUp(){
 		Debug.Log("ButtonUp");
+		startCountDownTime = true;
 		castButton.CrossFadeAlpha(1,0.1f,true);
 		narratorText.CrossFadeAlpha(1,2f,true);
 		ARCamera.enabled = false;
